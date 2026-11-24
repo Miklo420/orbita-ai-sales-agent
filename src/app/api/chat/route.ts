@@ -120,13 +120,13 @@ function sanitizeLead(lead: z.infer<typeof leadSchema> | undefined): LeadProfile
 /* -------------------------------- Errors -------------------------------- */
 
 const ERRORS = {
-  forbidden: "Origen no permitido.",
-  tooLarge: "El mensaje es demasiado largo. Máximo 500 caracteres.",
-  invalid: "No pude procesar el mensaje. Recarga la página e inténtalo de nuevo.",
-  internal: "Alex no pudo responder ahora mismo. Inténtalo de nuevo.",
-  quota: "La IA de esta demo no está disponible ahora mismo (cuota del proveedor de IA). Inténtalo más tarde.",
-  credentials: "El agente de IA no está configurado en este entorno.",
-  toolInput: "Parámetros inválidos para la herramienta.",
+  forbidden: "Origin not allowed.",
+  tooLarge: "Your message is too long. The limit is 500 characters.",
+  invalid: "I couldn't process that message. Please reload the page and try again.",
+  internal: "Alex couldn't reply right now. Please try again.",
+  quota: "The AI agent is temporarily unavailable (AI provider quota). Please try again later.",
+  credentials: "The AI agent isn't configured in this environment.",
+  toolInput: "Invalid tool parameters.",
 } as const;
 
 /** Maps any failure to a fixed, user-safe string. Details only go to server logs. */
@@ -151,8 +151,8 @@ export async function POST(req: Request) {
     if (!limit.ok) {
       const wait =
         limit.scope === "minute"
-          ? "Has enviado muchos mensajes seguidos. Espera un minuto y vuelve a intentarlo."
-          : `Alcanzaste el límite de mensajes de la demo por hora. Vuelve a intentarlo en ${Math.ceil(limit.retryAfterSec / 60)} min.`;
+          ? "You've sent a lot of messages in a row. Please wait a minute and try again."
+          : `You've reached the hourly message limit. Please try again in ${Math.ceil(limit.retryAfterSec / 60)} min.`;
       return textError(429, `⏳ ${wait}`, { "retry-after": String(limit.retryAfterSec) });
     }
 

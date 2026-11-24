@@ -34,9 +34,9 @@ type Props = {
 };
 
 const PENDING_LABEL: Record<ToolName, string> = {
-  updateLeadProfile: "IA escribiendo en el CRM…",
-  checkAvailability: "IA consultando la agenda…",
-  bookAppointment: "IA registrando la cita…",
+  updateLeadProfile: "AI writing to the CRM…",
+  checkAvailability: "AI checking the calendar…",
+  bookAppointment: "AI booking the appointment…",
 };
 
 export function CrmPanel({
@@ -50,7 +50,7 @@ export function CrmPanel({
 }: Props) {
   const leadSync = freshEvent?.tool === "updateLeadProfile" ? freshEvent : null;
   const bookingSync = freshEvent?.tool === "bookAppointment" ? freshEvent : null;
-  const hotLeads = lead.interestLevel === "caliente" ? 1 : 0;
+  const hotLeads = lead.interestLevel === "hot" ? 1 : 0;
 
   return (
     <div className="flex flex-col gap-4 lg:gap-5">
@@ -58,7 +58,7 @@ export function CrmPanel({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 className="text-lg font-semibold tracking-tight">Live CRM &amp; Dashboard</h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">Se actualiza solo mientras Alex conversa.</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">Updates automatically while Alex chats.</p>
         </div>
         <div className="flex h-7 items-center">
           {pendingTool ? (
@@ -72,7 +72,7 @@ export function CrmPanel({
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
               </span>
-              En vivo
+              Live
             </span>
           )}
         </div>
@@ -82,25 +82,25 @@ export function CrmPanel({
       <div className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-4">
         <MetricCard
           icon={<Users className="size-4" />}
-          label="Leads activos"
+          label="Active leads"
           value={String(activeLeads)}
-          hint={hotLeads ? `${hotLeads} caliente ahora` : "en esta sesión"}
+          hint={hotLeads ? `${hotLeads} hot right now` : "this session"}
         />
         <MetricCard
           icon={<CalendarCheck className="size-4" />}
-          label="Citas agendadas"
+          label="Booked calls"
           value={String(appointments.length)}
-          hint="llamadas de 30 min"
+          hint="30-min discovery calls"
           flashKey={bookingSync?.id}
         />
         <MetricCard
           icon={<Timer className="size-4" />}
-          label="Tiempo de respuesta"
+          label="Response time"
           value={avgLatencyMs === null ? "<2s" : `${(avgLatencyMs / 1000).toFixed(1)}s`}
           hint={
             lastLatencyMs === null
-              ? "objetivo < 2s"
-              : `último ${(lastLatencyMs / 1000).toFixed(1)}s · objetivo < 2s`
+              ? "target < 2s"
+              : `last ${(lastLatencyMs / 1000).toFixed(1)}s · target < 2s`
           }
           good={avgLatencyMs === null || avgLatencyMs < 2000}
         />
@@ -109,7 +109,7 @@ export function CrmPanel({
       {/* Lead profile */}
       <Card
         title="Lead Profile"
-        subtitle={lead.updatedAt ? `Actualizado ${timeAgo(lead.updatedAt)}` : "Esperando datos de la conversación"}
+        subtitle={lead.updatedAt ? `Updated ${timeAgo(lead.updatedAt)}` : "Waiting for conversation data"}
         icon={<User className="size-4" />}
         syncKey={leadSync?.id}
       >
@@ -125,10 +125,10 @@ export function CrmPanel({
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-base font-semibold">
-              {lead.name ?? <span className="text-zinc-400 dark:text-zinc-500">Lead anónimo</span>}
+              {lead.name ?? <span className="text-zinc-400 dark:text-zinc-500">Anonymous lead</span>}
             </p>
             <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">
-              {[lead.company, lead.niche].filter(Boolean).join(" · ") || "Empresa y nicho por descubrir"}
+              {[lead.company, lead.niche].filter(Boolean).join(" · ") || "Company and industry unknown yet"}
             </p>
           </div>
         </div>
@@ -141,26 +141,26 @@ export function CrmPanel({
         <dl className="grid gap-2 sm:grid-cols-2">
           <Field
             icon={<User className="size-3.5" />}
-            label="Nombre"
+            label="Name"
             value={lead.name}
             flashKey={flashFor(leadSync, "name")}
           />
           <Field
             icon={<Building className="size-3.5" />}
-            label="Empresa / Nicho"
+            label="Company / Industry"
             value={[lead.company, lead.niche].filter(Boolean).join(" · ") || undefined}
             flashKey={flashFor(leadSync, "company") ?? flashFor(leadSync, "niche")}
           />
           <Field
             icon={<Wallet className="size-3.5" />}
-            label="Presupuesto estimado"
+            label="Estimated budget"
             value={lead.budget}
-            badge={lead.budget && lead.budgetIsEstimate ? "estimado por IA" : undefined}
+            badge={lead.budget && lead.budgetIsEstimate ? "AI estimate" : undefined}
             flashKey={flashFor(leadSync, "budget")}
           />
           <Field
             icon={<Target className="size-3.5" />}
-            label="Necesidad"
+            label="Need"
             value={lead.needs}
             flashKey={flashFor(leadSync, "needs")}
           />
@@ -170,16 +170,16 @@ export function CrmPanel({
       {/* Appointments */}
       <Card
         title="Booked Appointments"
-        subtitle={`${appointments.length} ${appointments.length === 1 ? "cita confirmada" : "citas confirmadas"}`}
+        subtitle={`${appointments.length} ${appointments.length === 1 ? "confirmed appointment" : "confirmed appointments"}`}
         icon={<CalendarCheck className="size-4" />}
         syncKey={bookingSync?.id}
       >
         {appointments.length === 0 ? (
           <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-zinc-200 px-4 py-8 text-center dark:border-zinc-800">
             <CalendarX2 className="size-6 text-zinc-300 dark:text-zinc-600" aria-hidden />
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Aún no hay citas agendadas.</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">No appointments booked yet.</p>
             <p className="text-xs text-zinc-400 dark:text-zinc-500">
-              Pide horarios en el chat y elige uno para que Alex lo reserve.
+              Ask for available times in the chat and pick one for Alex to book.
             </p>
           </div>
         ) : (
@@ -187,11 +187,11 @@ export function CrmPanel({
             <table className="w-full min-w-[560px] text-left text-sm">
               <thead>
                 <tr className="border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-                  <th className="px-4 py-2 font-medium sm:px-5">Fecha</th>
-                  <th className="px-2 py-2 font-medium">Hora</th>
-                  <th className="px-2 py-2 font-medium">Cliente</th>
-                  <th className="px-2 py-2 font-medium">Proyecto</th>
-                  <th className="px-4 py-2 text-right font-medium sm:px-5">Estado</th>
+                  <th className="px-4 py-2 font-medium sm:px-5">Date</th>
+                  <th className="px-2 py-2 font-medium">Time</th>
+                  <th className="px-2 py-2 font-medium">Client</th>
+                  <th className="px-2 py-2 font-medium">Project</th>
+                  <th className="px-4 py-2 text-right font-medium sm:px-5">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -216,7 +216,7 @@ export function CrmPanel({
                     <td className="px-4 py-3 text-right sm:px-5">
                       <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300">
                         <CircleCheck className="size-3" aria-hidden />
-                        Confirmada
+                        Confirmed
                       </span>
                     </td>
                   </tr>
@@ -229,7 +229,7 @@ export function CrmPanel({
 
       <p className="flex items-center gap-1.5 pb-2 text-xs text-zinc-400 dark:text-zinc-500">
         <Briefcase className="size-3.5" aria-hidden />
-        Datos guardados solo en este navegador (localStorage). Sin base de datos externa.
+        Data is stored only in this browser (localStorage). No external database.
       </p>
     </div>
   );
@@ -241,11 +241,11 @@ function flashFor(event: SyncEvent | null, field: string): string | undefined {
 
 function timeAgo(iso: string): string {
   const seconds = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
-  if (seconds < 10) return "ahora mismo";
-  if (seconds < 60) return `hace ${seconds}s`;
+  if (seconds < 10) return "just now";
+  if (seconds < 60) return `${seconds}s ago`;
   const minutes = Math.round(seconds / 60);
-  if (minutes < 60) return `hace ${minutes} min`;
-  return new Date(iso).toLocaleString("es", { dateStyle: "short", timeStyle: "short" });
+  if (minutes < 60) return `${minutes} min ago`;
+  return new Date(iso).toLocaleString("en-US", { dateStyle: "short", timeStyle: "short" });
 }
 
 function Card({
@@ -273,7 +273,7 @@ function Card({
             role="status"
           >
             <Sparkles className="size-3" aria-hidden />
-            Sincronizado por IA
+            Synced by AI
           </span>
         </>
       )}
@@ -357,25 +357,25 @@ function Field({
         )}
       </dt>
       <dd className="mt-1 text-sm font-medium">
-        {value ?? <span className="font-normal text-zinc-300 dark:text-zinc-600">— pendiente</span>}
+        {value ?? <span className="font-normal text-zinc-300 dark:text-zinc-600">— pending</span>}
       </dd>
     </div>
   );
 }
 
 const INTEREST: Record<InterestLevel, { label: string; icon: ReactNode; active: string }> = {
-  frio: {
-    label: "Frío",
+  cold: {
+    label: "Cold",
     icon: <Snowflake className="size-3.5" />,
     active: "bg-sky-500 text-white border-sky-500",
   },
-  tibio: {
-    label: "Tibio",
+  warm: {
+    label: "Warm",
     icon: <Thermometer className="size-3.5" />,
     active: "bg-amber-500 text-white border-amber-500",
   },
-  caliente: {
-    label: "Caliente",
+  hot: {
+    label: "Hot",
     icon: <Flame className="size-3.5" />,
     active: "bg-red-500 text-white border-red-500",
   },
@@ -384,7 +384,7 @@ const INTEREST: Record<InterestLevel, { label: string; icon: ReactNode; active: 
 function InterestMeter({ level, flashKey }: { level?: InterestLevel; flashKey?: string }) {
   return (
     <div>
-      <p className="mb-1.5 text-xs text-zinc-500 dark:text-zinc-400">Nivel de interés</p>
+      <p className="mb-1.5 text-xs text-zinc-500 dark:text-zinc-400">Interest level</p>
       <div key={flashKey} className={`grid grid-cols-3 gap-1.5 rounded-xl ${flashKey ? "animate-field-flash" : ""}`}>
         {(Object.keys(INTEREST) as InterestLevel[]).map((key) => {
           const item = INTEREST[key];

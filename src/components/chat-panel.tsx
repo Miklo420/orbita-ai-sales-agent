@@ -19,19 +19,19 @@ import { AGENCY_NAME } from "@/lib/prompt";
 import type { LeadUIMessage } from "@/lib/types";
 
 const QUICK_PROMPTS = [
-  "Quiero automatizar mi clínica dental",
-  "Necesito una web con IA para mi inmobiliaria",
-  "¿Qué horarios tienen disponibles mañana?",
+  "I want to automate my dental clinic",
+  "I need an AI-powered website for my real estate agency",
+  "What times are available tomorrow?",
 ];
 
 const FIELD_LABELS: Record<string, string> = {
-  name: "nombre",
-  company: "empresa",
-  niche: "nicho",
-  needs: "necesidad",
-  budget: "presupuesto",
-  budgetIsEstimate: "presupuesto",
-  interestLevel: "interés",
+  name: "name",
+  company: "company",
+  niche: "industry",
+  needs: "need",
+  budget: "budget",
+  budgetIsEstimate: "budget",
+  interestLevel: "interest",
 };
 
 type Props = {
@@ -76,7 +76,7 @@ export function ChatPanel({ messages, status, error, onSend, onRetry, onStop }: 
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">Alex · {AGENCY_NAME}</p>
           <p className="truncate text-xs text-emerald-100/90 dark:text-zinc-400">
-            {isBusy ? "escribiendo…" : "en línea · agente de IA"}
+            {isBusy ? "typing…" : "online · AI agent"}
           </p>
         </div>
         <span className="hidden items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-medium sm:inline-flex">
@@ -88,12 +88,12 @@ export function ChatPanel({ messages, status, error, onSend, onRetry, onStop }: 
       {/* Messages */}
       <div ref={scrollRef} className="chat-wallpaper min-h-0 flex-1 space-y-2 overflow-y-auto px-3 py-4 sm:px-4">
         <div className="mx-auto mb-2 w-fit rounded-lg bg-white/80 px-3 py-1 text-[11px] text-zinc-500 shadow-sm dark:bg-zinc-800/80 dark:text-zinc-400">
-          Demo · Los mensajes son procesados por IA
+          Messages are handled by an AI agent
         </div>
 
         <Bubble role="assistant">
-          ¡Hola! 👋 Soy Alex, de {AGENCY_NAME}. Ayudamos a negocios a automatizar su atención y ventas con IA.
-          ¿Qué te gustaría mejorar en tu negocio?
+          Hi there! 👋 I&apos;m Alex from {AGENCY_NAME}. We help businesses automate customer service and sales with AI.
+          What would you like to improve in your business?
         </Bubble>
 
         {messages.map((message) => (
@@ -115,12 +115,12 @@ export function ChatPanel({ messages, status, error, onSend, onRetry, onStop }: 
                     ];
                     return (
                       <ToolChip key={key} icon={<Sparkles className="size-3.5" />}>
-                        CRM actualizado{fields.length > 0 && <> · {fields.join(", ")}</>}
+                        CRM updated{fields.length > 0 && <> · {fields.join(", ")}</>}
                       </ToolChip>
                     );
                   }
-                  if (part.state === "output-error") return <ToolChip key={key} error>No se pudo actualizar el perfil</ToolChip>;
-                  return <ToolChip key={key} loading>Actualizando perfil del lead…</ToolChip>;
+                  if (part.state === "output-error") return <ToolChip key={key} error>Couldn&apos;t update the lead profile</ToolChip>;
+                  return <ToolChip key={key} loading>Updating lead profile…</ToolChip>;
                 }
 
                 case "tool-checkAvailability": {
@@ -128,12 +128,12 @@ export function ChatPanel({ messages, status, error, onSend, onRetry, onStop }: 
                     const total = part.output.days.reduce((n, d) => n + d.slots.length, 0);
                     return (
                       <ToolChip key={key} icon={<CalendarClock className="size-3.5" />}>
-                        Agenda consultada · {total} horarios libres
+                        Calendar checked · {total} open slots
                       </ToolChip>
                     );
                   }
-                  if (part.state === "output-error") return <ToolChip key={key} error>No se pudo consultar la agenda</ToolChip>;
-                  return <ToolChip key={key} loading>Consultando agenda…</ToolChip>;
+                  if (part.state === "output-error") return <ToolChip key={key} error>Couldn&apos;t check the calendar</ToolChip>;
+                  return <ToolChip key={key} loading>Checking calendar…</ToolChip>;
                 }
 
                 case "tool-bookAppointment": {
@@ -142,14 +142,14 @@ export function ChatPanel({ messages, status, error, onSend, onRetry, onStop }: 
                       const { date, time } = part.output.appointment;
                       return (
                         <ToolChip key={key} icon={<CalendarCheck className="size-3.5" />} success>
-                          Cita confirmada · {formatDateLabel(date, { weekday: "short", month: "short" })}, {time}
+                          Appointment confirmed · {formatDateLabel(date, { weekday: "short", month: "short" })}, {time}
                         </ToolChip>
                       );
                     }
-                    return <ToolChip key={key} error>Horario no disponible</ToolChip>;
+                    return <ToolChip key={key} error>Time slot unavailable</ToolChip>;
                   }
-                  if (part.state === "output-error") return <ToolChip key={key} error>No se pudo agendar</ToolChip>;
-                  return <ToolChip key={key} loading>Agendando cita…</ToolChip>;
+                  if (part.state === "output-error") return <ToolChip key={key} error>Couldn&apos;t book the appointment</ToolChip>;
+                  return <ToolChip key={key} loading>Booking appointment…</ToolChip>;
                 }
 
                 default:
@@ -177,9 +177,9 @@ export function ChatPanel({ messages, status, error, onSend, onRetry, onStop }: 
           <div className="mx-auto flex max-w-sm animate-msg-in items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-300">
             <CircleExclamationPoint className="mt-0.5 size-4 shrink-0" aria-hidden />
             <div className="min-w-0">
-              <p>{error.message || "Algo salió mal."}</p>
+              <p>{error.message || "Something went wrong."}</p>
               <button type="button" onClick={onRetry} className="mt-1 font-medium underline underline-offset-2">
-                Reintentar
+                Try again
               </button>
             </div>
           </div>
@@ -213,8 +213,8 @@ export function ChatPanel({ messages, status, error, onSend, onRetry, onStop }: 
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Escribe un mensaje como si fueras un cliente…"
-            aria-label="Mensaje"
+            placeholder="Type a message as if you were a customer…"
+            aria-label="Message"
             maxLength={MAX_USER_CHARS}
             className="h-11 min-w-0 flex-1 rounded-full border border-zinc-200 bg-white px-4 text-sm outline-none transition placeholder:text-zinc-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 dark:border-zinc-700 dark:bg-zinc-950 dark:placeholder:text-zinc-500"
           />
@@ -230,7 +230,7 @@ export function ChatPanel({ messages, status, error, onSend, onRetry, onStop }: 
             <button
               type="button"
               onClick={onStop}
-              aria-label="Detener respuesta"
+              aria-label="Stop response"
               className="grid size-11 shrink-0 place-items-center rounded-full bg-zinc-800 text-white transition hover:bg-zinc-700 dark:bg-zinc-200 dark:text-zinc-900"
             >
               <Square className="size-4 fill-current" aria-hidden />
@@ -239,7 +239,7 @@ export function ChatPanel({ messages, status, error, onSend, onRetry, onStop }: 
             <button
               type="submit"
               disabled={!input.trim()}
-              aria-label="Enviar mensaje"
+              aria-label="Send message"
               className="grid size-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-white shadow-sm transition hover:bg-emerald-500 disabled:opacity-40"
             >
               <Send className="size-4" aria-hidden />
@@ -263,7 +263,7 @@ function Bubble({ role, children }: { role: "user" | "assistant"; children: Reac
         }`}
       >
         {children}
-        {isUser && <CheckCheck className="ml-1.5 inline size-3.5 align-[-2px] text-sky-500" aria-label="Leído" />}
+        {isUser && <CheckCheck className="ml-1.5 inline size-3.5 align-[-2px] text-sky-500" aria-label="Read" />}
       </div>
     </div>
   );

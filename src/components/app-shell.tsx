@@ -11,7 +11,7 @@ const Workspace = dynamic(() => import("./workspace"), {
   loading: () => <WorkspaceSkeleton />,
 });
 
-export function DemoApp() {
+export function AppShell() {
   return <Workspace />;
 }
 

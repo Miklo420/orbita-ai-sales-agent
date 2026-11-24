@@ -13,9 +13,9 @@ import { CrmPanel } from "./crm-panel";
 import { ThemeToggle } from "./theme-toggle";
 
 const STORAGE = {
-  messages: "alq:messages:v1",
-  archive: "alq:archive:v1",
-  latencies: "alq:latencies:v1",
+  messages: "oas:messages:v1",
+  archive: "oas:archive:v1",
+  latencies: "oas:latencies:v1",
 } as const;
 
 type Archive = {
@@ -38,7 +38,7 @@ function writeStorage(key: string, value: unknown) {
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // Storage full or blocked (private mode): the demo keeps working in memory.
+    // Storage full or blocked (private mode): the app keeps working in memory.
   }
 }
 
@@ -146,7 +146,7 @@ export default function Workspace() {
     setMobileTab("chat");
   }, [session.lead, session.appointments, setMessages, stop]);
 
-  const resetDemo = useCallback(() => {
+  const resetAll = useCallback(() => {
     stop();
     setArchive(EMPTY_ARCHIVE);
     setLatencies([]);
@@ -173,10 +173,10 @@ export default function Workspace() {
           </div>
           <div className="min-w-0">
             <h1 className="truncate text-sm font-semibold tracking-tight sm:text-base">
-              AI Lead Qualifier <span className="text-zinc-400 dark:text-zinc-500">&amp;</span> Appointment Setter
+              Orbita <span className="text-emerald-600 dark:text-emerald-400">AI Sales Agent</span>
             </h1>
             <p className="hidden truncate text-xs text-zinc-500 sm:block dark:text-zinc-400">
-              Agente comercial con function calling · CRM sincronizado en tiempo real
+              AI lead qualification & appointment setting · Real-time CRM sync
             </p>
           </div>
           <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
@@ -185,17 +185,17 @@ export default function Workspace() {
               onClick={newLead}
               disabled={messages.length === 0}
               className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 disabled:pointer-events-none disabled:opacity-40 sm:px-3 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
-              title="Guarda el lead actual y abre una conversación nueva"
+              title="Save the current lead and start a new conversation"
             >
               <UserPlus className="size-4" aria-hidden />
-              <span className="hidden sm:inline">Nuevo lead</span>
+              <span className="hidden sm:inline">New lead</span>
             </button>
             <button
               type="button"
-              onClick={resetDemo}
+              onClick={resetAll}
               className="inline-flex size-9 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-600 transition hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
-              title="Reiniciar demo (borra chat, leads y citas)"
-              aria-label="Reiniciar demo"
+              title="Reset workspace (clears chat, leads and appointments)"
+              aria-label="Reset workspace"
             >
               <RotateCcw className="size-4" aria-hidden />
             </button>
@@ -236,7 +236,7 @@ export default function Workspace() {
       <main className="grid flex-1 gap-4 p-4 lg:min-h-0 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-6 lg:p-6">
         <section
           className={`${mobileTab === "chat" ? "flex" : "hidden"} min-w-0 h-[calc(100dvh-8.5rem)] min-h-[480px] flex-col lg:flex lg:h-auto lg:min-h-0`}
-          aria-label="Simulador de chat"
+          aria-label="Chat"
         >
           <ChatPanel
             messages={messages}

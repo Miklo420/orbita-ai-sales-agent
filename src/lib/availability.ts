@@ -1,6 +1,6 @@
 /**
- * Fake-but-deterministic calendar for the demo.
- * Slots are derived from the client's local date so "mañana" always means
+ * Simulated but deterministic calendar (no external calendar needed).
+ * Slots are derived from the visitor's local date so "tomorrow" always means
  * the visitor's tomorrow, regardless of the server's timezone.
  */
 
@@ -8,8 +8,8 @@ const SLOT_TIMES = ["09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00
 
 export type DayAvailability = {
   date: string; // YYYY-MM-DD
-  dayLabel: "Mañana" | "Pasado mañana";
-  label: string; // "martes, 17 de noviembre"
+  dayLabel: "Tomorrow" | "Day after tomorrow";
+  label: string; // "Tuesday, November 17"
   slots: string[]; // ["09:00", ...]
 };
 
@@ -20,7 +20,7 @@ export function addDays(isoDate: string, days: number): string {
 
 export function formatDateLabel(isoDate: string, options?: Intl.DateTimeFormatOptions): string {
   const [y, m, d] = isoDate.split("-").map(Number);
-  return new Intl.DateTimeFormat("es", {
+  return new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -48,7 +48,7 @@ export function getAvailability(clientDate: string, bookedSlots: readonly string
     );
     return {
       date,
-      dayLabel: offset === 1 ? "Mañana" : "Pasado mañana",
+      dayLabel: offset === 1 ? "Tomorrow" : "Day after tomorrow",
       label: formatDateLabel(date),
       slots,
     };

@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Lead Qualifier & Appointment Setter",
+  title: "Orbita AI Sales Agent",
   description:
-    "Demo: agente comercial de IA que cualifica leads por chat, actualiza un CRM en vivo y agenda citas mediante function calling.",
+    "An AI sales agent that qualifies leads over chat, syncs a live CRM and books appointments with function calling.",
 };
 
 export const viewport: Viewport = {
@@ -31,7 +31,7 @@ const themeScript = `(function(){try{var t=localStorage.getItem('alq:theme');var
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="es"
+      lang="en"
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >

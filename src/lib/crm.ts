@@ -52,7 +52,7 @@ export function deriveSession(messages: LeadUIMessage[]): SessionState {
                 ...lead,
                 name: lead.name ?? appt.leadName,
                 company: lead.company ?? appt.company,
-                interestLevel: "caliente",
+                interestLevel: "hot",
               };
               events.push({ id: part.toolCallId, tool: "bookAppointment", fields: [] });
             }
